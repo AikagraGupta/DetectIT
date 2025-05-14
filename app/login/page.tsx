@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import NavBar from "../components/NavBar";
-import { FiEye, FiEyeOff } from 'react-icons/fi'; // You'll need to install react-icons
+import { FiEye, FiEyeOff } from 'react-icons/fi';
+import { FcGoogle } from 'react-icons/fc';
+import { login, signup } from './actions'
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -45,6 +47,24 @@ export default function LoginPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="mx-auto w-full bg-gray-900/70 rounded-2xl p-8 space-y-6 shadow-xl backdrop-blur-sm border border-gray-800">
+            <button
+              type="button"
+              onClick={() => alert('Google Sign In')}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-lg border-2 border-gray-700 hover:border-gray-600 bg-gray-800/40 text-white font-medium transition-colors"
+            >
+              <FcGoogle size={24} />
+              Sign in with Google
+            </button>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-700"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 text-gray-400 bg-gray-900/70">or continue with</span>
+              </div>
+            </div>
+
             {error && (
               <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/50 text-red-400 text-sm">
                 {error}
@@ -98,6 +118,7 @@ export default function LoginPage() {
 
             <button
               type="submit"
+              formAction={login}
               disabled={isLoading}
               className="w-full py-3 rounded-full bg-gradient-to-r from-green-400 to-blue-500 text-white font-semibold hover:scale-[1.02] transform transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
             >

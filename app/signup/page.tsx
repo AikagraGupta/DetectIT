@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import NavBar from "../components/NavBar";
+import { FcGoogle } from 'react-icons/fc';
+import { login, signup } from './actions'
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
@@ -33,6 +35,24 @@ export default function SignUpPage() {
           </div>
           
           <form onSubmit={handleSubmit} className="bg-gray-900/70 backdrop-blur-lg rounded-2xl p-8 space-y-6 shadow-xl border border-gray-800">
+            <button
+              type="button"
+              onClick={() => alert('Google Sign Up')}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-lg border-2 border-gray-700 hover:border-gray-600 bg-gray-800/40 text-white font-medium transition-colors"
+            >
+              <FcGoogle size={24} />
+              Sign up with Google
+            </button>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-700"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 text-gray-400 bg-gray-900/70">or continue with</span>
+              </div>
+            </div>
+
             {error && (
               <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-3">
                 <p className="text-red-400 text-sm">{error}</p>
@@ -80,6 +100,7 @@ export default function SignUpPage() {
 
             <button
               type="submit"
+              formAction={signup}
               className="w-full py-3.5 rounded-lg bg-gradient-to-r from-pink-500 to-purple-600 text-white font-semibold hover:scale-[1.02] transform transition-all duration-200 shadow-lg shadow-pink-500/25"
             >
               Create Account
