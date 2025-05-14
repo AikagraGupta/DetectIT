@@ -3,7 +3,7 @@
 import { useState } from "react";
 import NavBar from "../components/NavBar";
 import { FcGoogle } from 'react-icons/fc';
-import { login, signup } from './actions'
+import { signup } from './actions'
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
@@ -64,6 +64,7 @@ export default function SignUpPage() {
               <input
                 id="email"
                 type="email"
+                name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -77,6 +78,7 @@ export default function SignUpPage() {
               <input
                 id="password"
                 type="password"
+                name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
