@@ -1,27 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import NavBar from "../components/NavBar";
 import { FcGoogle } from 'react-icons/fc';
 import { signup } from './actions'
 
 export default function SignUpPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [error, setError] = useState<string | null>(null);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !password || !confirm) {
-      setError("All fields are required.");
-    } else if (password !== confirm) {
-      setError("Passwords do not match.");
-    } else {
-      alert(`Registering user: ${email}`);
-    }
-  };
-
   return (
     <>
       <NavBar />
@@ -34,7 +17,7 @@ export default function SignUpPage() {
             <p className="mt-4 text-gray-400">Create your account and start exploring</p>
           </div>
           
-          <form onSubmit={handleSubmit} className="bg-gray-900/70 backdrop-blur-lg rounded-2xl p-8 space-y-6 shadow-xl border border-gray-800">
+          <form className="bg-gray-900/70 backdrop-blur-lg rounded-2xl p-8 space-y-6 shadow-xl border border-gray-800">
             <button
               type="button"
               onClick={() => alert('Google Sign Up')}
@@ -53,20 +36,12 @@ export default function SignUpPage() {
               </div>
             </div>
 
-            {error && (
-              <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-3">
-                <p className="text-red-400 text-sm">{error}</p>
-              </div>
-            )}
-
             <div className="space-y-2">
               <label htmlFor="email" className="block text-gray-200 text-sm font-medium">Email</label>
               <input
                 id="email"
                 type="email"
                 name="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="you@example.com"
                 className="w-full px-4 py-3 rounded-lg bg-gray-800/50 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
@@ -79,26 +54,13 @@ export default function SignUpPage() {
                 id="password"
                 type="password"
                 name="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
                 required
                 placeholder="••••••••"
                 className="w-full px-4 py-3 rounded-lg bg-gray-800/50 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
               />
             </div>
 
-            <div className="space-y-2">
-              <label htmlFor="confirm" className="block text-gray-200 text-sm font-medium">Confirm Password</label>
-              <input
-                id="confirm"
-                type="password"
-                value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
-                required
-                placeholder="••••••••"
-                className="w-full px-4 py-3 rounded-lg bg-gray-800/50 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
-              />
-            </div>
+           
 
             <button
               type="submit"
