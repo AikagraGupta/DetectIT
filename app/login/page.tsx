@@ -4,7 +4,7 @@ import { useState } from "react";
 import NavBar from "../components/NavBar";
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
-import { login, signup } from './actions'
+import { login } from './actions'
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -76,6 +76,7 @@ export default function LoginPage() {
               <input
                 id="email"
                 type="email"
+                name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -89,6 +90,7 @@ export default function LoginPage() {
               <div className="relative">
                 <input
                   id="password"
+                  name="password"
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
