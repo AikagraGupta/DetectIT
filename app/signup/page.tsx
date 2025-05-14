@@ -1,50 +1,99 @@
-'use client';
-import NavBar from '../components/NavBar';
-import Link from 'next/link';
+"use client";
 
-export default function SignupPage() {
+import { useState } from "react";
+import NavBar from "../components/NavBar";
+
+export default function SignUpPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !password || !confirm) {
+      setError("All fields are required.");
+    } else if (password !== confirm) {
+      setError("Passwords do not match.");
+    } else {
+      alert(`Registering user: ${email}`);
+    }
+  };
+
   return (
     <>
       <NavBar />
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-gray-800 pt-28 px-4 sm:px-6 lg:px-8">
-        <div className="bg-gradient-to-br from-gray-900 to-gray-800 bg-opacity-90 backdrop-blur-lg rounded-2xl shadow-2xl p-10 w-full max-w-md sm:max-w-lg transform transition-transform duration-300 hover:scale-105">
-          <h2 className="text-3xl font-extrabold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-blue-400">
-            Create Your Detect-It Account
-          </h2>
-          <form className="space-y-5">
-            {[
-              { id: 'name', type: 'text', label: 'Full Name', placeholder: 'John Doe' },
-              { id: 'email', type: 'email', label: 'Email', placeholder: 'you@example.com' },
-              { id: 'password', type: 'password', label: 'Password', placeholder: '••••••••' },
-              { id: 'confirmPassword', type: 'password', label: 'Confirm Password', placeholder: '••••••••' }
-            ].map(({ id, type, label, placeholder }) => (
-              <div key={id}>
-                <label htmlFor={id} className="block text-sm text-gray-400 mb-1">
-                  {label}
-                </label>
-                <input
-                  id={id}
-                  type={type}
-                  placeholder={placeholder}
-                  className="w-full p-3 rounded-lg bg-gray-900 border border-gray-700 placeholder-gray-500 text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-400 transition"
-                />
+      <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-gray-800 px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-xl mx-auto p-4">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600 inline-block">
+              Join Detect-It Today
+            </h1>
+            <p className="mt-4 text-gray-400">Create your account and start exploring</p>
+          </div>
+          
+          <form onSubmit={handleSubmit} className="bg-gray-900/70 backdrop-blur-lg rounded-2xl p-8 space-y-6 shadow-xl border border-gray-800">
+            {error && (
+              <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-3">
+                <p className="text-red-400 text-sm">{error}</p>
               </div>
-            ))}
+            )}
+
+            <div className="space-y-2">
+              <label htmlFor="email" className="block text-gray-200 text-sm font-medium">Email</label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="you@example.com"
+                className="w-full px-4 py-3 rounded-lg bg-gray-800/50 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="password" className="block text-gray-200 text-sm font-medium">Password</label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="••••••••"
+                className="w-full px-4 py-3 rounded-lg bg-gray-800/50 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="confirm" className="block text-gray-200 text-sm font-medium">Confirm Password</label>
+              <input
+                id="confirm"
+                type="password"
+                value={confirm}
+                onChange={(e) => setConfirm(e.target.value)}
+                required
+                placeholder="••••••••"
+                className="w-full px-4 py-3 rounded-lg bg-gray-800/50 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
+              />
+            </div>
+
             <button
               type="submit"
-              className="w-full py-3 bg-gradient-to-r from-green-400 to-blue-500 text-black font-semibold rounded-full shadow-lg hover:shadow-xl transition-shadow duration-200"
+              className="w-full py-3.5 rounded-lg bg-gradient-to-r from-pink-500 to-purple-600 text-white font-semibold hover:scale-[1.02] transform transition-all duration-200 shadow-lg shadow-pink-500/25"
             >
-              Sign Up
+              Create Account
             </button>
+            
+            <p className="text-center text-gray-400 text-sm mt-6">
+              Already have an account?{" "}
+              <a href="/login" className="text-pink-500 hover:text-pink-400 transition-colors">
+                Sign in
+              </a>
+            </p>
           </form>
-          <p className="mt-6 text-center text-sm text-gray-400">
-            Already have an account?{' '}
-            <Link href="/login" className="text-green-300 hover:text-green-400 transition">
-              Login
-            </Link>
-          </p>
         </div>
-      </div>
+      </section>
     </>
   );
 }
