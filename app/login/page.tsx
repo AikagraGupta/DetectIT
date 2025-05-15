@@ -11,7 +11,7 @@ export default function LoginPage() {
   return (
     <>
       <NavBar />
-      <section className="min-h-screen flex bg-gradient-to-br from-white via-gray-900 to-gray-800 px-4 sm:px-6 lg:px-8">
+      <section className="min-h-screen flex bg-gradient-to-br from-black via-gray-900 to-gray-800 px-4 sm:px-6 lg:px-8">
         <div className="m-auto w-full max-w-lg">
           <div className="text-center space-y-2 mb-8">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-blue-400">
