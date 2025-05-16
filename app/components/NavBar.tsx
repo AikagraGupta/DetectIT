@@ -1,11 +1,13 @@
-// components/NavBar.tsx
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function NavBar() {
+  const pathname = usePathname();
   const items = [
-    { text: "Get Started", href: "/get-started" },
+    { text: "Detect Image", href: "/detect-image" },
+    { text: "Detect Video", href: "/detect-video" },
     { text: "Login", href: "/login" },
     { text: "Sign Up", href: "/signup" },
   ];
@@ -20,16 +22,21 @@ export default function NavBar() {
           Detect-It
         </Link>
         <nav className="flex space-x-8 text-base">
-          {items.map(({ text, href }) => (
-            <Link
-              key={text}
-              href={href}
-              className="relative group text-gray-400 hover:text-white transition-colors duration-200"
-            >
-              {text}
-              <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-green-400 transition-all duration-300 group-hover:w-full" />
-            </Link>
-          ))}
+          {items.map(({ text, href }) => {
+            const isActive = pathname === href;
+            const linkClasses = `relative group transition-colors duration-200 ${
+              isActive
+                ? "text-white hover:text-white"
+                : "text-gray-400 hover:text-white"
+            }`;
+            
+            return (
+              <Link key={href} href={href} className={linkClasses}>
+                {text}
+                <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-green-400 transition-all duration-300 group-hover:w-full" />
+              </Link>
+            );
+          })}
         </nav>
       </div>
     </header>
