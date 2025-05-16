@@ -13,7 +13,7 @@ export default function HomePage() {
           Protect your media with state-of-the-art AI-powered deepfake detection, right in your browser.
         </p>
         {/* Simplified hover effect: scale and brightness only, no overlay */}
-        <Link href="/get-started" className="relative inline-block group">
+        <Link href="/detect-image" className="relative inline-block group">
           <span className="block px-8 py-3 sm:px-10 sm:py-4 bg-gradient-to-r from-green-400 to-blue-500 rounded-full text-black font-bold tracking-wide transition-transform duration-300 transform group-hover:scale-105 group-hover:brightness-110">
             Get Started
           </span>
