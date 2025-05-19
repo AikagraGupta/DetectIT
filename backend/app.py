@@ -26,10 +26,10 @@ if not os.path.exists(MODEL_PATH):
         for chunk in resp.iter_content(chunk_size=8192):
             if chunk:
                 f.write(chunk)
-    print("✅ Model downloaded.")
+    print("Model downloaded.")
 
 model = load_model(MODEL_PATH, compile=False)
-print("✅ Loaded model from", MODEL_PATH)
+print("Loaded model from", MODEL_PATH)
 
 def preprocess_image(file_stream):
     buf = np.frombuffer(file_stream.read(), np.uint8)
