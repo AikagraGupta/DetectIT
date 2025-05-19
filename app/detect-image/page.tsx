@@ -18,7 +18,7 @@ export default function UploadImagePage() {
 
     // 1) Size check
     if (file.size > MAX_SIZE) {
-      setError("File is too large—please select an image under 50 MB.");
+      setError("File is too large, please select an image under 50 MB.");
       return;
     }
 

@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import NavBar from "../components/NavBar";
 import { createClient } from "../../utils/supabase/client";
 
+const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50 MB
+
 export default function UploadVideoPage() {
   const supabase = createClient();
   const [file, setFile] = useState<File | null>(null);
@@ -13,12 +15,19 @@ export default function UploadVideoPage() {
 
   const handleDetectAndUpload = async () => {
     if (!file) return;
+
+    // 1) Size check
+    if (file.size > MAX_VIDEO_SIZE) {
+      setError("Video is too large, please select a file under 50 MB.");
+      return;
+    }
+
     setProcessing(true);
     setError(null);
     setResult(null);
 
     try {
-      // 1) Send video to Flask for deepfake detection
+      // 2) Send video to Flask for deepfake detection
       const form = new FormData();
       form.append("file", file);
       const res = await fetch("http://localhost:5000/predict-video", {
@@ -29,7 +38,7 @@ export default function UploadVideoPage() {
       const data = await res.json();
       setResult({ label: data.label, confidence: data.confidence });
 
-      // 2) Optionally archive the video in Supabase
+      // 3) Archive the video in Supabase
       const fileName = `${Date.now()}_${file.name}`;
       const { error: uploadError } = await supabase.storage
         .from("videos")
@@ -57,7 +66,11 @@ export default function UploadVideoPage() {
             type="file"
             accept="video/*"
             disabled={processing}
-            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+            onChange={(e) => {
+              setError(null);
+              setResult(null);
+              setFile(e.target.files?.[0] ?? null);
+            }}
             className="block w-full text-gray-200 file:bg-gray-800 file:border file:border-gray-700 file:rounded-lg file:px-4 file:py-2 file:font-medium file:text-white"
           />
           <button
