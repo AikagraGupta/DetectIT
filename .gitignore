@@ -53,3 +53,5 @@ model/weights/Meso4_DF_full.keras
 
 # ignore downloaded model weights
 /backend/weights/
+
+weights/Meso4_DF_full.keras

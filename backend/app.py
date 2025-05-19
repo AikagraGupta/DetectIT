@@ -1,4 +1,3 @@
-# backend/app.py
 import os
 import cv2
 import numpy as np
@@ -8,46 +7,45 @@ from flask_cors import CORS
 from tensorflow.keras.models import load_model
 
 app = Flask(__name__)
-CORS(app)  # allow your Next.js frontend to call
+CORS(app)
 
-# ─── 1. Ensure the full model is downloaded ────────────────────────────────────
-MODEL_URL = (
+BASE_DIR    = os.path.dirname(os.path.abspath(__file__))
+WEIGHTS_DIR = os.path.join(BASE_DIR, "weights")
+MODEL_PATH  = os.path.join(WEIGHTS_DIR, "Meso4_DF_full.keras")
+MODEL_URL   = (
     "https://github.com/AikagraGupta/DetectIT/"
     "releases/download/v1.0.0/Meso4_DF_full.keras"
 )
-MODEL_PATH = os.path.join("weights", "Meso4_DF_full.keras")
+
 if not os.path.exists(MODEL_PATH):
-    os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
-    resp = requests.get(MODEL_URL, stream=True); resp.raise_for_status()
+    os.makedirs(WEIGHTS_DIR, exist_ok=True)
+    print(f"⏬ Downloading model to {MODEL_PATH} …")
+    resp = requests.get(MODEL_URL, stream=True)
+    resp.raise_for_status()
     with open(MODEL_PATH, "wb") as f:
-        for chunk in resp.iter_content(8192):
-            f.write(chunk)
+        for chunk in resp.iter_content(chunk_size=8192):
+            if chunk:
+                f.write(chunk)
+    print("✅ Model downloaded.")
 
-# ─── 2. Load your Keras model ─────────────────────────────────────────────────
 model = load_model(MODEL_PATH, compile=False)
+print("✅ Loaded model from", MODEL_PATH)
 
-# ─── 3. Helpers ───────────────────────────────────────────────────────────────
 def preprocess_image(file_stream):
-    """Read an image file and return a (1,256,256,3) numpy array."""
-    file_bytes = np.frombuffer(file_stream.read(), np.uint8)
-    img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+    buf = np.frombuffer(file_stream.read(), np.uint8)
+    img = cv2.imdecode(buf, cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img = cv2.resize(img, (256,256)).astype("float32") / 255.0
     return np.expand_dims(img, 0)
 
 def sample_video_frames(file_stream, samples=30):
-    """Read a video file, sample frames, and return list of preprocessed arrays."""
-    # save to a temp file so OpenCV can open it
-    tmp_path = "temp_video.mkv"
+    tmp_path = os.path.join(BASE_DIR, "temp_video.mkv")
     with open(tmp_path, "wb") as f:
         f.write(file_stream.read())
-
     cap = cv2.VideoCapture(tmp_path)
     total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     interval = max(1, total // samples)
-    frames = []
-    idx = taken = 0
-
+    frames, idx, taken = [], 0, 0
     while True:
         ret, frame = cap.read()
         if not ret: break
@@ -57,18 +55,16 @@ def sample_video_frames(file_stream, samples=30):
             frames.append(np.expand_dims(resized, 0))
             taken += 1
         idx += 1
-
     cap.release()
     os.remove(tmp_path)
     return frames
 
-# ─── 4. Endpoints ────────────────────────────────────────────────────────────
 @app.route("/predict-image", methods=["POST"])
 def predict_image():
     if "file" not in request.files:
         return jsonify(error="no file"), 400
-    img_array = preprocess_image(request.files["file"])
-    score = float(model.predict(img_array, verbose=0)[0][0])
+    img_arr = preprocess_image(request.files["file"])
+    score = float(model.predict(img_arr, verbose=0)[0][0])
     return jsonify(label="real" if score>=0.5 else "deepfake", confidence=score)
 
 @app.route("/predict-video", methods=["POST"])
