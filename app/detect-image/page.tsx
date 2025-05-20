@@ -16,7 +16,6 @@ export default function UploadImagePage() {
   const handleDetectAndUpload = async () => {
     if (!file) return;
 
-    // 1) Size check
     if (file.size > MAX_SIZE) {
       setError("File is too large, please select an image under 50 MB.");
       return;
@@ -27,7 +26,6 @@ export default function UploadImagePage() {
     setResult(null);
 
     try {
-      // 2) Run deepfake detection via Flask
       const form = new FormData();
       form.append("file", file);
       const res = await fetch("http://localhost:5000/predict-image", {
@@ -35,14 +33,11 @@ export default function UploadImagePage() {
         body: form,
       });
       if (!res.ok) {
-        // wrap the template literal in backticks!
         throw new Error(`Detection failed: ${res.statusText}`);
       }
       const data = await res.json();
       setResult({ label: data.label, confidence: data.confidence });
 
-      // 3) Archive the image in Supabase
-      // fileName needs backticks too
       const fileName = `${Date.now()}_${file.name}`;
       const { error: uploadError } = await supabase.storage
         .from("images")

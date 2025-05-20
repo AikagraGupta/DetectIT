@@ -76,5 +76,6 @@ def predict_video():
     avg = float(np.mean(scores)) if scores else 0.0
     return jsonify(label="real" if avg>=0.5 else "deepfake", confidence=avg)
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+port = int(os.environ.get("PORT", 5000))
+print(f"Starting server on port {port}")
+app.run(host="0.0.0.0", port=port)
