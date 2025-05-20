@@ -44,9 +44,16 @@ export default function UploadVideoPage() {
         .from("videos")
         .upload(fileName, file, { contentType: file.type });
       if (uploadError) throw uploadError;
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setError(err.message || "Unknown error");
+      // narrow unknown to Error or string
+      const message =
+        err instanceof Error
+          ? err.message
+          : typeof err === "string"
+          ? err
+          : "An unknown error occurred";
+      setError(message);
     } finally {
       setProcessing(false);
       setFile(null);

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import NavBar from "../components/NavBar";
 import { createClient } from "../../utils/supabase/client";
 
-const MAX_SIZE = 50 * 1024 * 1024; // 50 MB in bytes
+const MAX_SIZE = 50 * 1024 * 1024; 
 
 export default function UploadImagePage() {
   const supabase = createClient();
@@ -44,9 +44,15 @@ export default function UploadImagePage() {
         .from("images")
         .upload(fileName, file, { contentType: file.type });
       if (uploadError) throw uploadError;
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setError(err.message || "Unknown error");
+      const message =
+        err instanceof Error
+          ? err.message
+          : typeof err === "string"
+          ? err
+          : "An unknown error occurred";
+      setError(message);
     } finally {
       setProcessing(false);
       setFile(null);
