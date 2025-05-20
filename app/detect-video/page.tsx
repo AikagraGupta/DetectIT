@@ -1,52 +1,59 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import NavBar from "../components/NavBar";
 import { createClient } from "../../utils/supabase/client";
 
 const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50 MB
+const API_URL = process.env.NEXT_PUBLIC_DETECT_API_URL; // e.g. https://your-render-api.onrender.com
 
 export default function UploadVideoPage() {
-  const supabase = createClient();
+  const [supabase, setSupabase] = useState<ReturnType<typeof createClient> | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [processing, setProcessing] = useState(false);
   const [result, setResult] = useState<{ label: string; confidence: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // only in browser
+  useEffect(() => {
+    setSupabase(createClient());
+  }, []);
+
   const handleDetectAndUpload = async () => {
     if (!file) return;
-
-    // 1) Size check
-    if (file.size > MAX_VIDEO_SIZE) {
-      setError("Video is too large, please select a file under 50 MB.");
+    if (!supabase) {
+      setError("Client not initialized yet – please wait a moment.");
       return;
     }
-
+    if (file.size > MAX_VIDEO_SIZE) {
+      setError("Video is too large – please select a file under 50 MB.");
+      return;
+    }
     setProcessing(true);
     setError(null);
     setResult(null);
 
     try {
-      // 2) Send video to Flask for deepfake detection
+      // 1) Deepfake detection
       const form = new FormData();
       form.append("file", file);
-      const res = await fetch("http://localhost:5000/predict-video", {
+      const res = await fetch(`${API_URL}/predict-video`, {
         method: "POST",
         body: form,
       });
       if (!res.ok) throw new Error(`Detection failed: ${res.statusText}`);
-      const data = await res.json();
-      setResult({ label: data.label, confidence: data.confidence });
+      const { label, confidence } = await res.json();
+      setResult({ label, confidence });
 
-      // 3) Archive the video in Supabase
+      // 2) Upload to Supabase
       const fileName = `${Date.now()}_${file.name}`;
-      const { error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase
+        .storage
         .from("videos")
         .upload(fileName, file, { contentType: file.type });
       if (uploadError) throw uploadError;
     } catch (err: unknown) {
       console.error(err);
-      // narrow unknown to Error or string
       const message =
         err instanceof Error
           ? err.message
@@ -80,6 +87,7 @@ export default function UploadVideoPage() {
             }}
             className="block w-full text-gray-200 file:bg-gray-800 file:border file:border-gray-700 file:rounded-lg file:px-4 file:py-2 file:font-medium file:text-white"
           />
+
           <button
             disabled={!file || processing}
             onClick={handleDetectAndUpload}
