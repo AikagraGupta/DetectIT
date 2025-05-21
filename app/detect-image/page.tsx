@@ -28,7 +28,7 @@ export default function UploadImagePage() {
     try {
       const form = new FormData();
       form.append("file", file);
-      const res = await fetch("http://localhost:5000/predict-image", {
+      const res = await fetch("https://advaithsai10-31e957f3-1729-4981-9c3d-8c890b9a9741.socketxp.com/predict-image", {
         method: "POST",
         body: form,
       });
