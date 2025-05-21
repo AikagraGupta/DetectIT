@@ -30,7 +30,7 @@ export default function UploadVideoPage() {
       // 2) Send video to Flask for deepfake detection
       const form = new FormData();
       form.append("file", file);
-      const res = await fetch("http://localhost:5000/predict-video", {
+      const res = await fetch("https://advaithsai10-31e957f3-1729-4981-9c3d-8c890b9a9741.socketxp.com/predict-video", {
         method: "POST",
         body: form,
       });
