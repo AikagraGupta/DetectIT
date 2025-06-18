@@ -55,3 +55,5 @@ model/weights/Meso4_DF_full.keras
 /backend/weights/
 
 weights/Meso4_DF_full.keras
+/backend/.git
+/backend/.gitignore
